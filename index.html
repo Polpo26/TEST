@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.rawgit.com/Leaflet/Leaflet.label/0.8/dist/leaflet.label.css" />
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://rawgit.com/mejackreed/Leaflet-IIIF/master/leaflet-iiif.js"></script>
+    <script src="https://cdn.rawgit.com/Leaflet/Leaflet.label/0.8/dist/leaflet.label.js"></script>
+      
+    <!--Add draw plugin -->
+    <link rel='stylesheet' href='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' />
+    <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+      
+      
+<!--Loading the new geojson-->
+    <script src="testPolygonGeojson.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        #delete, #export {
+            position: absolute;
+            top:50px;
+            right:10px;
+            z-index:100;
+            background:white;
+            color:black;
+            padding:6px;
+            border-radius:4px;
+            font-family: 'Helvetica Neue';
+            cursor: pointer;
+            font-size:12px;
+            text-decoration:none;
+        }
+        #export {
+            top:90px;
+        }
+    </style>  
+
+  </head>
+  <body>
+    <div id='map'></div>
+    <div id='delete'>Delete Features</div>
+    <a href='#' id='export'>Export Features</a>
+      
+      <script>
+            var map;
+
+            map = L.map('map', {
+              center: [-200, 118],
+              crs: L.CRS.Simple,
+              zoom: 8
+            });
+
+            var baseLayer = L.tileLayer.iiif(
+              'https://dlc.services/iiif-img/48/24/e7a4f78a-64bd-41fd-a760-e85823ed98dc/info.json'
+            ).addTo(map);
+
+            L.marker([-164, 121])
+              .bindLabel('Monro&#39;s studio, 1 Henrietta Street, Covent Garden', { noHide: true })
+              .addTo(map);
+
+            L.marker([-160, 178])
+              .bindLabel('The Royal Academy', { noHide: true })
+              .addTo(map);
+
+            L.marker([-200, 66])
+              .bindLabel('St Martin&#39;s Workhouse', { noHide: true })
+              .addTo(map);
+
+//            L.polygon([ 
+//              [-198.45, 130],
+//              [-197.75, 131],
+//              [-199.3, 132.2],
+//              [-200, 131.15],
+//            ]).bindLabel('20 Adam Street, Dr John Turton (1735-1806), physician with royal patronage; a leading figure in the Royal College of Physicians and physician-in-ordinary to George III and the Prince of Wales from 1797.  With Garrick (at no. 5) he was the first resident of the Terrace.', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-199.1, 129.2],
+//              [-198.45, 130],
+//              [-200, 131.15],
+//              [-200.65, 130.3],
+//            ]).bindLabel('1 Sir John Mitford (1748-1830), of Lincoln&#39;s Inn and Batsford Park, Gloucestershire. Lawyer and politician, Speaker of the House of Commons 1801 and author on legal and political matters.', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-199.8, 128.4],
+//              [-199.1, 129.2],
+//              [-200.65, 130.3],
+//              [-201.25, 129.5],
+//            ]).bindLabel('2 Walter Cleland (1775-1807). Scottish merchant, who had made a fortune in Calcutta.', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-200.4, 127.6],
+//              [-199.8, 128.4],
+//              [-201.25, 129.5],
+//              [-202, 128.75],
+//            ]).bindLabel('3 William Minier and Charles Minier (d. 1809), seedsmen of The Strand. ', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-201, 126.8],
+//              [-200.4, 127.6],
+//              [-202, 128.75],
+//              [-202.5, 128.05],
+//            ]).bindLabel('4 Sir Brook Watson (1735-1807), former merchant, commissary-general to the forces of Great Britain, (resident 1798-1807). Previously the house (to 1797) of John Henderson (1764-1843), amateur artist patron of Girtin and Turner (resident 1790-1797), and his wife Georgiana Jane Henderson (1770-1850), artist.', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-201.5, 126.2],
+//              [-201, 126.8],
+//              [-202.5, 128.05],
+//              [-203.1, 127.3],
+//            ]).bindLabel('5. Eva Maria Garrick (n&eacute;e Veigel; 1724-1822), former dancer, and widow of the actor David Garrick. The Garricks had been one of the first residents of the Adelphi, taking up this address in 1773.', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-202.1, 125.5],
+//              [-201.5, 126.2],
+//              [-203.1, 127.3],
+//              [-203.6, 126.6],
+//            ]).bindLabel('6. John Thomas Batt (1746-1831), esq. of New Hall, Wiltshire, barrister', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-202.7, 124.7],
+//              [-202.1, 125.5],
+//              [-203.6, 126.6],
+//              [-204.2, 125.8],
+//            ]).bindLabel('7. John Cator, esq (1728-1806) of Bankside, Southwark and Beckenham, Kent, wealthy timber merchant and politician, East India Company stockholder.', { noHide: true }).addTo(map);
+
+
+            L.marker([-203.8, 124.7])
+                    .bindLabel('The Monro family home, 8 Adelphi Terrace', { noHide: false })
+                    .addTo(map);
+
+//            L.polygon([
+//              [-203.8, 123.2],
+//              [-203.3, 123.9],
+//              [-204.7, 125.1],
+//              [-205.2, 124.3],
+//            ]).bindLabel('9. Sir John William Anderson (1736-1813), bart of Mill Hill, Hendon, Middlesex,  politician and owner of slave factory in Africa', { noHide: true }).addTo(map);
+//
+//            L.polygon([
+//              [-205.2, 122.2],
+//              [-204.1, 123.5],
+//              [-205.2, 124.3],
+//              [-206.3, 123.2],
+//            ]).bindLabel('10.  Sir Edward Hyde East, bart (1764-1847), MP, judge and writer on law', { noHide: true }).addTo(map);
+        
+        var featureGroup = L.featureGroup().addTo(map);
+
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: featureGroup
+            }
+        }).addTo(map);
+
+        map.on('draw:created', function(e) {
+
+            // Each time a feaute is created, it's added to the over arching feature group
+            featureGroup.addLayer(e.layer);
+        });
+
+
+        // on click, clear all layers
+        document.getElementById('delete').onclick = function(e) {
+            featureGroup.clearLayers();
+        }
+
+        document.getElementById('export').onclick = function(e) {
+            // Extract GeoJson from featureGroup
+            var data = featureGroup.toGeoJSON();
+
+            // Stringify the GeoJson
+            var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+            // Create export
+            document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+            document.getElementById('export').setAttribute('download','data.geojson');
+        }
+
+        // Show coordinates
+        var div = document.createElement('div');
+        div.id = 'coordsDiv';
+        div.style.position = 'absolute';
+        div.style.bottom = '0';
+        div.style.left = '0';
+        div.style.zIndex = '999';
+        document.getElementById('map').appendChild(div);
+
+        map.on('mousemove', function(e) {
+
+          var lat = e.latlng.lat.toFixed(5);
+          var lon = e.latlng.lng.toFixed(5);
+
+          document.getElementById('coordsDiv').innerHTML = lat + ', ' + lon;
+
+        });
+
+
+        // Creating the new layer
+        var newPolygons;
+
+
+        newPolygons = new L.geoJson(testPolygonGeojson, {
+          color: '#e600ff',
+          fillColor: '#fbff00',
+            opacity: 1,
+          weight: 1,
+          onEachFeature: function(feature, layer) {
+            layer.on({
+                mouseover: highlightFeatureOnMouseOver,
+                mouseout: resetFeatureStyle,
+
+            });
+            layer.bindPopup(
+                feature.properties.info
+            );
+          }
+        }).addTo(map);
+
+        function highlightFeatureOnMouseOver(e) {
+
+          e.target.setStyle({
+            color: 'red',
+              fillColor: '#ffffff',
+              opacity: 1,
+            weight: 4
+          });
+
+          e.target.bringToFront();
+//          e.target.openPopup();
+
+        }
+
+        function resetFeatureStyle(e) {
+//        newPolygons.resetStyle(e.target);
+            newPolygons.setStyle({
+              color: '#e600ff',
+              fillColor: '#fbff00',
+              weight: 1
+        });
+
+        }
+
+          
+      </script>
+  </body>
+</html>
